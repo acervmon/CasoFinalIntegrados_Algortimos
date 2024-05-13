@@ -2,10 +2,10 @@
 # de LA CLASE actor principal AÑADE tenemos gesto de actores que es igual a los gestores anteriores
 # despues hacer un main menu para agregar,modificar, actualizar, gestionar tanto el producto como un actor. CADA GESTOR DE CLIETNE TIENE UN MAIN DONDE GESTOR DE CLEINTE GESTIONA SOLO PRODUCTO Y OTRO GESTOR GESTUINA LAS ACTORES Y SOBRE ELLO PEDIR LA OPCION DE GESTIONAR PRODUCTO O ACTORES
 # EL ACTOR PRINCIPAL SERA UN INTERFAZE UNA CLASE A B C " CLASE ABSTRACTA"
-# APARTE DE LOS QUE TIENEN EL GESTOR DE CLIENTE TENDRA METODOS PROPIOS 
+# APARTE DE LOS QUE TIENEN EL GESTOR DE CLIENTE TENDRA METODOS PROPIOS
 #MATERIAS PRIMAS "QUE TIPO Y CUANTOS MATERIAS PRIMAS QUE HAYAMOS DEFINIDO UN PRODUCTO" LE TENEMOS QUE DECIR UN ID, UNA MATERIA PRIMA, UN NOMBRE
 #DE MATERIA PRIMA VAMOS A LLAMAR A PRODUCTO "GENERAR UNA LISTA DE PRODUCTOS " LLAMAR AL METODO "LISTA PRODUCTO"
-#CAMBIO DE CUSTODIA DEL ACTOR 1 AL ACTOR 2 
+#CAMBIO DE CUSTODIA DEL ACTOR 1 AL ACTOR 2
 # ESTOS SON LOS METODOS QUE TIENEN TODOS
 # DEFINIR QUE TIPO DE ACTOR
 #PROVEEDOR SOLO RECOGE DATOS TENDRA UN METODO DE "DAME MATERIAS" Y SERA EL UNICO QUE VA A PODER GESTIONAR UN PRODUCTO, VA A RECIBIR LAS MATERIAS PARA ENVIARSELOS AL FABRICANTE
@@ -15,6 +15,8 @@
 # CONSUMIDOR TENDRA EL EMTODO DE CONSUME
 
 from abc import ABC, abstractmethod
+from Producto import Producto
+from ActorPrincipal import ActorPrincipal
 
 class Producto:
     def __init__(self, id, nombre, tipo, cantidad, precio, materias_primas=None):
@@ -110,24 +112,30 @@ class Fabricante(ActorPrincipal):
         producto = Producto(len(self.lista) + 1, "Producto Nuevo", "Tipo Nuevo", 1, 100, materias_primas)
         self.lista.append(producto)
 
-    def gestionar(self):
+    def dame_materias(self):
+        materias_primas = []
         while True:
-            print("1. Fabricar y transformar materias en producto")
-            print("2. Ver lista de productos")
-            print("3. Volver al menú principal")
+            print("1. Agregar materia prima")
+            print("2. Terminar")
             opcion = int(input("Seleccione una opción: "))
             if opcion == 1:
-                self.fabricar_y_transformar_materias_en_producto(self.dame_materias())
+                id = int(input("Ingrese el ID de la materia prima: "))
+                nombre = input("Ingrese el nombre de la materia prima: ")
+                materia_prima = {"id": id, "nombre": nombre}
+                materias_primas.append(materia_prima)
             elif opcion == 2:
-                self.ver_lista_productos()
-            elif opcion == 3:
                 break
             else:
                 print("Opción inválida")
+        return materias_primas
+        def ver_lista_productos(self):
+            for producto in self.productos:
+                print(f"ID: {producto.id}, Nombre: {producto.nombre}, Tipo: {producto.tipo}, Cantidad: {producto.cantidad}, Precio: {producto.precio}")
+                print("Opción inválida")
 
-    def ver_lista_productos(self):
-        for producto in self.lista:
-            print(f"ID: {producto.id}, Nombre: {producto.nombre}, Tipo: {producto.tipo}, Cantidad: {producto.cantidad}, Precio: {producto.precio}")
+def ver_lista_productos(self):
+    for producto in self.lista:
+        print(f"ID: {producto.id}, Nombre: {producto.nombre}, Tipo: {producto.tipo}, Cantidad: {producto.cantidad}, Precio: {producto.precio}")
 
 class Distribuidor(ActorPrincipal):
     def __init__(self, id, nombre, tipo):
@@ -183,7 +191,11 @@ class Minorista(ActorPrincipal):
 class Consumidor(ActorPrincipal):
     def __init__(self, id, nombre, tipo):
         super().__init__(id, nombre, tipo)
+        self.productos = []
 
     def consumir_producto(self, producto):
-        print(f"Consumiendo producto: {producto.nombre}")
-        self.productos.remove(producto)
+        if producto in self.productos:
+            print(f"Consumiendo producto: {producto.nombre}")
+            self.productos.remove(producto)
+        else:
+            print("El producto no está en la lista de productos del consumidor")
